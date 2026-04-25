@@ -1,0 +1,258 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=UnifrakturCook:wght@700&display=swap");
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Cormorant Garamond", serif;
+  color: #f5ead4;
+  background:
+    radial-gradient(circle at top, rgba(248, 210, 124, 0.12), transparent 28%),
+    linear-gradient(180deg, #120d09 0%, #24160f 44%, #120d09 100%);
+}
+
+.app-shell,
+.menu-screen,
+.instructions-screen,
+.scene-screen {
+  width: 100%;
+  height: 100%;
+}
+
+.menu-screen,
+.instructions-screen,
+.scene-screen {
+  position: relative;
+}
+
+.menu-screen,
+.instructions-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 12%, rgba(214, 174, 86, 0.24), transparent 24%),
+    linear-gradient(135deg, rgba(83, 20, 12, 0.7), rgba(19, 14, 10, 0.82)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(201, 166, 92, 0.08) 0 2px,
+      transparent 2px 96px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(201, 166, 92, 0.06) 0 2px,
+      transparent 2px 96px
+    );
+}
+
+.menu-screen::before,
+.instructions-screen::before,
+.menu-screen::after,
+.instructions-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.menu-screen::before,
+.instructions-screen::before {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 210, 122, 0.2), transparent 18%),
+    radial-gradient(circle at 85% 18%, rgba(255, 210, 122, 0.16), transparent 16%),
+    radial-gradient(circle at 50% 82%, rgba(107, 24, 18, 0.38), transparent 24%);
+  mix-blend-mode: screen;
+}
+
+.menu-screen::after,
+.instructions-screen::after {
+  inset: 18px;
+  border: 1px solid rgba(201, 166, 92, 0.28);
+  box-shadow:
+    inset 0 0 0 1px rgba(78, 44, 22, 0.6),
+    inset 0 0 120px rgba(0, 0, 0, 0.35);
+}
+
+.menu-panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(760px, 100%);
+  height: 100%;
+  padding: 28px 20px 40px;
+  text-align: center;
+}
+
+.instructions-panel {
+  justify-content: center;
+  gap: 18px;
+  max-width: 760px;
+}
+
+.eyebrow {
+  margin: 0;
+  padding-top: 12px;
+  font-size: 0.9rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #d5b06a;
+}
+
+.game-title {
+  margin: 10px 0 0;
+  font-family: "UnifrakturCook", cursive;
+  font-size: clamp(2.9rem, 8vw, 5.4rem);
+  line-height: 0.96;
+  letter-spacing: 0.02em;
+  color: #f6e3b1;
+  text-shadow:
+    0 2px 0 rgba(88, 50, 20, 0.9),
+    0 12px 26px rgba(0, 0, 0, 0.45);
+}
+
+.menu-copy {
+  margin: 16px 0 0;
+  max-width: 32ch;
+  font-size: 1.3rem;
+  color: #e7d8b7;
+  line-height: 1.35;
+}
+
+.instructions-title {
+  margin: 8px 0 0;
+  font-size: clamp(2.1rem, 6vw, 3.4rem);
+  color: #f4dca2;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.instructions-copy {
+  max-width: 38ch;
+}
+
+.instructions-grid {
+  display: grid;
+  gap: 16px;
+  width: min(680px, 100%);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.info-block {
+  padding: 18px 20px;
+  border: 1px solid rgba(217, 185, 120, 0.25);
+  background: rgba(38, 25, 16, 0.46);
+  box-shadow: inset 0 1px 0 rgba(255, 244, 214, 0.06);
+}
+
+.info-title {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+  color: #f0d393;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.info-text {
+  margin: 0;
+  font-size: 1.12rem;
+  line-height: 1.35;
+  color: #eadabd;
+}
+
+.menu-actions {
+  margin-top: 28px;
+  display: grid;
+  gap: 12px;
+  width: min(320px, 100%);
+}
+
+.instructions-actions {
+  margin-top: 8px;
+}
+
+.menu-button,
+.back-button {
+  border-radius: 999px;
+  padding: 14px 18px;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    opacity 140ms ease,
+    background-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.menu-button {
+  border: 1px solid rgba(217, 185, 120, 0.55);
+  background: linear-gradient(180deg, #ead5a5, #bb8d44);
+  color: #21140d;
+  box-shadow: inset 0 1px 0 rgba(255, 247, 224, 0.58);
+}
+
+.menu-button.primary {
+  background: linear-gradient(180deg, #f5e3aa, #cf9f42);
+  color: #160d08;
+}
+
+.menu-button.ghost {
+  border-color: rgba(130, 98, 54, 0.5);
+  background: linear-gradient(180deg, rgba(84, 56, 32, 0.85), rgba(48, 31, 18, 0.95));
+  color: #a88a57;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.menu-button:not(:disabled):hover,
+.back-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+}
+
+.scene-screen[hidden],
+.menu-screen[hidden],
+.instructions-screen[hidden] {
+  display: none;
+}
+
+.back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1;
+  border: 1px solid rgba(217, 185, 120, 0.45);
+  background: linear-gradient(180deg, rgba(71, 42, 21, 0.92), rgba(37, 22, 13, 0.96));
+  color: #f3dfb0;
+}
+
+#scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 640px) {
+  .menu-panel {
+    padding: 24px 16px 32px;
+  }
+
+  .menu-copy {
+    font-size: 1.15rem;
+  }
+
+  .instructions-grid {
+    grid-template-columns: 1fr;
+  }
+}
