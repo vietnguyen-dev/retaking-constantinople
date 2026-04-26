@@ -4,7 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Retaking Constantinople</title>
+    <link rel="icon" href="data:," />
     <link rel="stylesheet" href="styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.176.0/build/three.module.js"
+        }
+      }
+    </script>
   </head>
   <body>
     <main class="app-shell">
@@ -50,7 +58,8 @@
               <h3 class="info-title">Basic Controls</h3>
               <p class="info-text">
                 Move the mouse to look around. Arrow keys or WASD to move. Use
-                the menu button to return if you need to regroup.
+                F to swing your sword. Use the menu button to return if you need
+                to regroup.
               </p>
             </div>
           </div>
@@ -62,6 +71,21 @@
               Go Back To Main Menu
             </button>
           </div>
+        </div>
+      </section>
+      <section class="menu-screen loading-screen" id="loadingScreen" hidden>
+        <div class="menu-panel loading-panel">
+          <p class="eyebrow">Campaign Preparations</p>
+          <h2 class="instructions-title">Mustering Forces</h2>
+          <div class="loading-emblem" aria-hidden="true">
+            <span class="loading-ring"></span>
+            <span class="loading-ring delayed"></span>
+          </div>
+          <p class="menu-copy loading-copy">
+            Rousing the city guard, gathering steel, and preparing the march
+            back into Constantinople.
+          </p>
+          <p class="loading-status">Loading campaign briefing...</p>
         </div>
       </section>
       <section class="scene-screen" id="sceneScreen" hidden>

@@ -1,7 +1,9 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.176.0/build/three.module.js";
+import { OBJLoader } from "https://cdn.jsdelivr.net/npm/three@0.176.0/examples/jsm/loaders/OBJLoader.js";
 
 const menu = document.querySelector("#menu");
 const instructionsScreen = document.querySelector("#instructionsScreen");
+const loadingScreen = document.querySelector("#loadingScreen");
 const sceneScreen = document.querySelector("#sceneScreen");
 const startButton = document.querySelector("#startButton");
 const sceneButton = document.querySelector("#sceneButton");
@@ -9,6 +11,8 @@ const readyButton = document.querySelector("#readyButton");
 const backToMenuButton = document.querySelector("#backToMenuButton");
 const backButton = document.querySelector("#backButton");
 const canvas = document.querySelector("#scene");
+const loadingDelayMs = 1400;
+let loadingTimeoutId = null;
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -25,6 +29,7 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.set(0, 2.4, 34);
 camera.lookAt(0, 10, -8);
+scene.add(camera);
 
 scene.background = new THREE.Color(0x0c0906);
 scene.fog = new THREE.Fog(0x0c0906, 50, 150);
@@ -65,6 +70,96 @@ const candleMaterial = new THREE.MeshStandardMaterial({
   emissive: 0xff8a2a,
   emissiveIntensity: 1.2,
 });
+
+const textureLoader = new THREE.TextureLoader();
+
+function loadTexture(path, colorSpace = null) {
+  const texture = textureLoader.load(path);
+
+  if (colorSpace !== null) {
+    texture.colorSpace = colorSpace;
+  }
+
+  return texture;
+}
+
+const swordMaterial = new THREE.MeshStandardMaterial({
+  map: loadTexture(
+    "31-textures/Textures/Sting_Base_Color.png",
+    THREE.SRGBColorSpace,
+  ),
+  normalMap: loadTexture("31-textures/Textures/Sting_Normal.png"),
+  roughnessMap: loadTexture("31-textures/Textures/Sting_Roughness.png"),
+  metalnessMap: loadTexture("31-textures/Textures/Sting_Metallic.png"),
+  aoMap: loadTexture("31-textures/Textures/Sting_Mixed_AO.png"),
+  emissiveMap: loadTexture(
+    "31-textures/Textures/Sting_Emissive.png",
+    THREE.SRGBColorSpace,
+  ),
+  emissive: new THREE.Color(0x7fd7ff),
+  emissiveIntensity: 0.45,
+  roughness: 1,
+  metalness: 1,
+});
+
+const swordHolder = new THREE.Group();
+const swordGrip = new THREE.Group();
+const swordBasePosition = new THREE.Vector3(-0.32, -0.18, -0.32);
+const swordBaseRotation = new THREE.Euler(-0.22, -2.95, 0.18);
+const swordGripBasePosition = new THREE.Vector3(-0.02, -0.12, -0.04);
+const swordGripBaseRotation = new THREE.Euler(-1.4, Math.PI - 0.04, Math.PI / 2);
+const swordSwingPositionOffset = new THREE.Vector3(0.04, 0.08, -0.48);
+const swordSwingRotationOffset = new THREE.Vector3(0.55, -0.08, -0.06);
+const swordSwingDuration = 0.34;
+const swordCurrentPosition = new THREE.Vector3();
+const swordCurrentRotation = new THREE.Vector3();
+let swordSwingTime = swordSwingDuration;
+swordHolder.position.copy(swordBasePosition);
+swordHolder.rotation.copy(swordBaseRotation);
+swordGrip.position.copy(swordGripBasePosition);
+swordGrip.rotation.copy(swordGripBaseRotation);
+swordHolder.add(swordGrip);
+camera.add(swordHolder);
+
+new OBJLoader().load(
+  "49-sting-sword-lowpoly.obj/Sting-Sword-lowpoly.obj",
+  (sword) => {
+    const swordBounds = new THREE.Box3().setFromObject(sword);
+    const swordSize = swordBounds.getSize(new THREE.Vector3());
+    const swordScale = 1.65 / Math.max(swordSize.x, swordSize.y, swordSize.z);
+    const swordHandleAnchor = new THREE.Vector3(
+      (swordBounds.min.x + swordBounds.max.x) * 0.5,
+      swordBounds.max.y,
+      (swordBounds.min.z + swordBounds.max.z) * 0.5,
+    );
+
+    sword.scale.setScalar(swordScale);
+
+    sword.traverse((child) => {
+      if (!child.isMesh) {
+        return;
+      }
+
+      child.material = swordMaterial;
+      child.castShadow = false;
+      child.receiveShadow = false;
+
+      if (child.geometry.attributes.uv && !child.geometry.attributes.uv2) {
+        child.geometry.setAttribute(
+          "uv2",
+          new THREE.Float32BufferAttribute(
+            child.geometry.attributes.uv.array,
+            2,
+          ),
+        );
+      }
+    });
+
+    sword.position.copy(swordHandleAnchor).multiplyScalar(-swordScale);
+
+    swordGrip.add(sword);
+  },
+);
 
 const church = new THREE.Group();
 scene.add(church);
@@ -404,6 +499,10 @@ window.addEventListener("keydown", (event) => {
   if (event.code === "Space" && camera.position.y <= groundHeight + 0.001) {
     verticalVelocity = jumpVelocity;
   }
+
+  if (event.code === "KeyF" && !event.repeat && !sceneScreen.hidden) {
+    swordSwingTime = 0;
+  }
 });
 window.addEventListener("keyup", (event) => {
   pressedKeys.delete(event.key);
@@ -461,6 +560,38 @@ function animate() {
     camera.position.z = THREE.MathUtils.clamp(camera.position.z, minZ, maxZ);
   }
 
+  const movementAmount = movement.lengthSq() > 0 ? 1 : 0;
+  swordCurrentPosition.set(
+    swordGripBasePosition.x + Math.sin(elapsed * 7) * 0.014 * movementAmount,
+    swordGripBasePosition.y + Math.cos(elapsed * 14) * 0.01 * movementAmount,
+    swordGripBasePosition.z + Math.sin(elapsed * 7) * 0.012 * movementAmount,
+  );
+  swordCurrentRotation.set(
+    swordGripBaseRotation.x + Math.cos(elapsed * 7) * 0.025 * movementAmount,
+    swordGripBaseRotation.y,
+    swordGripBaseRotation.z + Math.sin(elapsed * 7) * 0.02 * movementAmount,
+  );
+
+  swordSwingTime = Math.min(swordSwingTime + delta, swordSwingDuration);
+  const swordSwingProgress = swordSwingTime / swordSwingDuration;
+  const swordSwingBlend = Math.sin(swordSwingProgress * Math.PI);
+
+  swordCurrentPosition.addScaledVector(
+    swordSwingPositionOffset,
+    swordSwingBlend,
+  );
+  swordCurrentRotation.addScaledVector(
+    swordSwingRotationOffset,
+    swordSwingBlend,
+  );
+
+  swordGrip.position.copy(swordCurrentPosition);
+  swordGrip.rotation.set(
+    swordCurrentRotation.x,
+    swordCurrentRotation.y,
+    swordCurrentRotation.z,
+  );
+
   verticalVelocity -= gravity * delta;
   camera.position.y += verticalVelocity * delta;
 
@@ -482,6 +613,7 @@ function animate() {
 function showScene() {
   menu.hidden = true;
   instructionsScreen.hidden = true;
+  loadingScreen.hidden = true;
   sceneScreen.hidden = false;
   previousMouseX = null;
   previousMouseY = null;
@@ -495,9 +627,15 @@ function showScene() {
 function showMenu() {
   sceneScreen.hidden = true;
   instructionsScreen.hidden = true;
+  loadingScreen.hidden = true;
   menu.hidden = false;
   previousMouseX = null;
   previousMouseY = null;
+
+  if (loadingTimeoutId !== null) {
+    window.clearTimeout(loadingTimeoutId);
+    loadingTimeoutId = null;
+  }
 
   if (animationFrameId !== null) {
     window.cancelAnimationFrame(animationFrameId);
@@ -508,6 +646,7 @@ function showMenu() {
 function showInstructions() {
   menu.hidden = true;
   sceneScreen.hidden = true;
+  loadingScreen.hidden = true;
   instructionsScreen.hidden = false;
   previousMouseX = null;
   previousMouseY = null;
@@ -518,8 +657,31 @@ function showInstructions() {
   }
 }
 
+function showLoadingScreen() {
+  menu.hidden = true;
+  sceneScreen.hidden = true;
+  instructionsScreen.hidden = true;
+  loadingScreen.hidden = false;
+  previousMouseX = null;
+  previousMouseY = null;
+
+  if (animationFrameId !== null) {
+    window.cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
+
+  if (loadingTimeoutId !== null) {
+    window.clearTimeout(loadingTimeoutId);
+  }
+
+  loadingTimeoutId = window.setTimeout(() => {
+    loadingTimeoutId = null;
+    showScene();
+  }, loadingDelayMs);
+}
+
 startButton.addEventListener("click", showInstructions);
 sceneButton.addEventListener("click", showScene);
-readyButton.addEventListener("click", showScene);
+readyButton.addEventListener("click", showLoadingScreen);
 backToMenuButton.addEventListener("click", showMenu);
 backButton.addEventListener("click", showMenu);
