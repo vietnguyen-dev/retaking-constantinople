@@ -1,0 +1,14 @@
+{
+  "name": "three-scene",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Retaking Constantinople browser prototype served by Express.",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

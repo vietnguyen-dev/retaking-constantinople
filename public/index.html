@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Retaking Constantinople</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="menu-screen" id="menu">
+        <div class="menu-panel">
+          <p class="eyebrow">Prototype Build</p>
+          <h1 class="game-title">Retaking Constantinople</h1>
+          <p class="menu-copy">
+            Rally the defenders, strike back against the Turkish occupation,
+            and reclaim the imperial city.
+          </p>
+          <div class="menu-actions">
+            <button class="menu-button primary" id="startButton" type="button">
+              Start Campaign
+            </button>
+            <button class="menu-button" id="sceneButton" type="button">
+              View Scene
+            </button>
+            <button class="menu-button ghost" type="button" disabled>
+              Campaign Locked
+            </button>
+          </div>
+        </div>
+      </section>
+      <section class="menu-screen instructions-screen" id="instructionsScreen" hidden>
+        <div class="menu-panel instructions-panel">
+          <p class="eyebrow">War Council</p>
+          <h2 class="instructions-title">Instructions</h2>
+          <p class="menu-copy instructions-copy">
+            Lead the effort to take Constantinople back from the Turks. Survey
+            the battlefield, push through the occupied districts, and reclaim
+            the city before enemy forces can regroup.
+          </p>
+          <div class="instructions-grid">
+            <div class="info-block">
+              <h3 class="info-title">Objective</h3>
+              <p class="info-text">
+                Break the occupation, secure the approaches, and restore
+                Constantinople to your side.
+              </p>
+            </div>
+            <div class="info-block">
+              <h3 class="info-title">Basic Controls</h3>
+              <p class="info-text">
+                Move the mouse to look around. Arrow keys or WASD to move. Use
+                the menu button to return if you need to regroup.
+              </p>
+            </div>
+          </div>
+          <div class="menu-actions instructions-actions">
+            <button class="menu-button primary" id="readyButton" type="button">
+              Ready To Go
+            </button>
+            <button class="menu-button" id="backToMenuButton" type="button">
+              Go Back To Main Menu
+            </button>
+          </div>
+        </div>
+      </section>
+      <section class="scene-screen" id="sceneScreen" hidden>
+        <button class="back-button" id="backButton" type="button">
+          Back To Menu
+        </button>
+        <canvas id="scene"></canvas>
+      </section>
+    </main>
+    <script type="module" src="index.js"></script>
+  </body>
+</html>

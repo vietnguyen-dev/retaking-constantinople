@@ -8,6 +8,8 @@ The current build presents a playable prototype with:
 - a 3D scene rendered in the browser
 - movement and camera controls for exploring the space
 
+The browser assets live in `public/` and are served by the Express server in `server.js`.
+
 ## Premise
 
 The game is framed as a campaign to reclaim Constantinople from occupying Turkish forces. The current version focuses on tone, environment, and presentation as the foundation for a larger action or strategy game.
@@ -21,10 +23,22 @@ The game is framed as a campaign to reclaim Constantinople from occupying Turkis
 
 ## Running It
 
-Because this is a simple static project, you can run it with any local web server. For example:
+Install dependencies:
 
 ```bash
-python3 -m http.server
+npm install
 ```
 
-Then open `http://localhost:8000`.
+Start the Express server:
+
+```bash
+npm start
+```
+
+Then open `http://localhost:3000`.
+
+For development with automatic restarts when files change:
+
+```bash
+npm run dev
+```
